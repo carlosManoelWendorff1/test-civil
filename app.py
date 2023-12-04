@@ -4,22 +4,25 @@ from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import sessionmaker
 from sqlalchemy.exc import IntegrityError
 from datetime import datetime
+import psycopg2
+
 
 app = Flask(__name__)
 
-connection_string = os.getenv("DATABASE_URL")  # Use the DATABASE_URL environment variable
 
 # If DATABASE_URL is not set, use default connection (MySQL)
-if not connection_string:
-    db_username = "admin"
-    db_password = "12345678"
-    db_host = "shuffle.cno5zkhzwncl.us-east-2.rds.amazonaws.com"
-    db_name = "shuffle_database"
-    connection_string = f"mysql://{db_username}:{db_password}@{db_host}/{db_name}"
+db_username = "postgres_user"
+db_password = "12345678"
+db_host = "localhost"
+db_port = "5432"
+db_name = "postgres_user"
+
+connection_string = f'postgresql://{db_username}:{db_password}@{db_host}:{db_port}/{db_name}'
 engine = create_engine(connection_string)
 Base = declarative_base()
 DBSession = sessionmaker(bind=engine)
 session = DBSession()
+
 
 # Define the User model
 class User(Base):
