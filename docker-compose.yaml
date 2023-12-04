@@ -1,0 +1,26 @@
+version: '3'
+services:
+  shuffle-api:  
+    container_name: shuffle-api  
+    build:
+      context: . 
+      dockerfile: Dockerfile  
+    ports:
+      - "5000:5000"  
+    environment:
+      DATABASE_URL: "postgresql://postgres_user:12345678@postgres:5432/postgres_user"
+
+  postgres:
+    image: postgres
+    container_name: shuffle-postgres
+    restart: always
+    ports:
+      - "5432:5432"
+    environment:
+      POSTGRES_USER: postgres_user
+      POSTGRES_PASSWORD: 12345678
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+
+volumes:
+  postgres_data:
