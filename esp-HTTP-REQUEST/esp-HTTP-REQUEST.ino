@@ -1,9 +1,9 @@
 #include <WiFi.h>
 
-const char* ssid = "YOUR_WIFI_SSID";
-const char* password = "YOUR_WIFI_PASSWORD";
-const char* serverName = "yourserver.com"; // Replace with your server's address
-const int serverPort = 80; // HTTP
+const char* ssid = "WENDORFF";
+const char* password = "52134418";
+const char* serverName = "192.168.0.37"; // Replace with your server's address
+const int serverPort = 5000; // HTTP
 
 void setup() {
   Serial.begin(115200);
@@ -30,7 +30,7 @@ void loop() {
   }
 
   // Create the GET request with the sensor value
-  String url = "/your-endpoint?value=" + String(sensorValue); // Customize your payload here
+  String url = "/users"; // Customize your payload here
   client.print(String("GET ") + url + " HTTP/1.1\r\n" +
                "Host: " + serverName + "\r\n" +
                "Connection: close\r\n\r\n");
