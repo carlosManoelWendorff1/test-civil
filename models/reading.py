@@ -1,8 +1,9 @@
-import datetime
+from datetime import datetime
 from sqlalchemy import Column, Integer, String, DateTime, Float, Boolean, ForeignKey,create_engine
 from sqlalchemy.orm import relationship
 from sqlalchemy.ext.declarative import declarative_base
-from civil import Base
+
+Base = declarative_base()
 class Reading(Base):
     __tablename__ = 'reading'
 

@@ -2,7 +2,7 @@ from sqlalchemy import Column, Integer, String, DateTime, Float, Boolean, Foreig
 from sqlalchemy.orm import relationship
 from sqlalchemy.ext.declarative import declarative_base
 
-from civil import Base
+Base = declarative_base()
 
 
 class Sensor(Base):
