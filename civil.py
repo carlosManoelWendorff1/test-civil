@@ -7,6 +7,10 @@ from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import sessionmaker
 from datetime import datetime
 
+from models.meter import Meter
+from models.reading import Reading
+from models.sensor import Sensor
+
 app = Flask(__name__)
 
 # If DATABASE_URL is not set, use default connection (MySQL)
@@ -22,31 +26,6 @@ Base = declarative_base()
 DBSession = sessionmaker(bind=engine)
 session = DBSession()
 
-class Reading(Base):
-    __tablename__ = 'reading'
-
-    id = Column(Integer, primary_key=True)
-    value = Column(Float(2),nullable=False)
-    time = Column(DateTime, default=datetime.utcnow)
-    type = Column(String,nullable=False)
-    sensor_id = Column(Integer, ForeignKey('sensor.id'))
-
-class Sensor(Base):
-    __tablename__ = 'sensor'
-
-    id = Column(Integer, primary_key=True)
-    isDefault = Column(Boolean, default=False)
-    meter_id = Column(Integer, ForeignKey('meter.id'))
-
-    readings = relationship("Reading")
-
-class Meter(Base):
-    __tablename__ = 'meter'
-
-    id = Column(Integer, primary_key=True)
-    battery = Column(Integer)
-
-    sensors = relationship("Sensor", back_populates="meter")
 
 # Create the database tables
 Base.metadata.create_all(engine)
