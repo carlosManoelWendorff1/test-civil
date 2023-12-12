@@ -1,14 +1,17 @@
 #include <WiFi.h>
+#include "Hdc.h"
 
-const char* ssid = "WENDORFF";
-const char* password = "52134418";
-const char* serverName = "192.168.0.37"; // Replace with your server's address
+const char* ssid = "WickedBotz";
+const char* password = "wickedbotz";
+const char* serverName = "192.168.0.127"; // Replace with your server's address
 const int serverPort = 5000; // HTTP
+
+Hdc hdc;
 
 void setup() {
   Serial.begin(115200);
   delay(1000);
-
+  hdc.setup();
   // Connect to Wi-Fi
   WiFi.begin(ssid, password);
   while (WiFi.status() != WL_CONNECTED) {
@@ -21,7 +24,10 @@ void setup() {
 }
 
 void loop() {
-  float sensorValue = analogRead(A0); // Replace with your sensor reading
+  float sensorTemp = hdc.getTemp();
+  Serial.println(sensorTemp);
+  float sensorHum = hdc.getHum();
+  Serial.println(sensorHum);
 
   WiFiClient client;
   if (!client.connect(serverName, serverPort)) {
@@ -30,7 +36,7 @@ void loop() {
   }
 
   // Create the GET request with the sensor value
-  String url = "/users"; // Customize your payload here
+  String url = "/meters"; // Customize your payload here
   client.print(String("GET ") + url + " HTTP/1.1\r\n" +
                "Host: " + serverName + "\r\n" +
                "Connection: close\r\n\r\n");

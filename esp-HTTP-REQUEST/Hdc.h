@@ -5,7 +5,7 @@
 #include <Wire.h>
 #include "ClosedCube_HDC1080.h"
 
-  class hdc
+  class Hdc
   {
     private:
       ClosedCube_HDC1080 hdc1080;
@@ -19,5 +19,5 @@
       double getHum(){
         return hdc1080.readHumidity();
       }
-  }
+  };
 #endif

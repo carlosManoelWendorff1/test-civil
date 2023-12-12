@@ -7,9 +7,8 @@ from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import sessionmaker
 from datetime import datetime
 
-from models.meter import Meter
-from models.reading import Reading
-from models.sensor import Sensor
+from models.meter import Meter, Reading, Sensor
+
 
 app = Flask(__name__)
 
@@ -91,11 +90,12 @@ def delete_meter(meter_id):
 @app.route('/readings', methods=['POST'])
 def create_reading():
     data = request.get_json()
-    if "value" in data and "time" in data and "sensor_id" in data:
+    if "value" in data and "time" in data and "type" in data and "sensor_id" in data:
         value = data["value"]
         time = data["time"]
+        type = data["type"]
         sensor_id = data["sensor_id"]
-        reading = Reading(value=value, time=time, sensor_id=sensor_id)
+        reading = Reading(value=value, time=time,type=type, sensor_id=sensor_id)
         session.add(reading)
         session.commit()
         return jsonify({"message": "Reading created successfully", "reading_id": reading.id}), 201
@@ -106,7 +106,7 @@ def create_reading():
 @app.route('/readings', methods=['GET'])
 def get_readings():
     readings = session.query(Reading).all()
-    reading_dicts = [{"id": reading.id, "value": reading.value, "time": reading.time, "sensor_id": reading.sensor_id} for reading in readings]
+    reading_dicts = [{"id": reading.id, "value": reading.value, "time": reading.time, "sensor_id": reading.sensor_id,"type":reading.type} for reading in readings]
     return jsonify(reading_dicts)
 
 # Get readings for a specific sensor
@@ -126,11 +126,10 @@ def get_sensor_readings(sensor_id):
 @app.route('/sensors', methods=['POST'])
 def create_sensor():
     data = request.get_json()
-    if "isDefault" in data and "time" in data and "meter_id" in data:
+    if "isDefault" in data and "meter_id" in data:
         isDefault = data["isDefault"]
-        time = data["time"]
         meter_id = data["meter_id"]
-        sensor = Sensor(isDefault=isDefault, time=time, meter_id=meter_id)
+        sensor = Sensor(isDefault=isDefault, meter_id=meter_id)
         session.add(sensor)
         session.commit()
         return jsonify({"message": "Sensor created successfully", "sensor_id": sensor.id}), 201
@@ -141,7 +140,7 @@ def create_sensor():
 @app.route('/sensors', methods=['GET'])
 def get_sensors():
     sensors = session.query(Sensor).all()
-    sensor_dicts = [{"id": sensor.id, "isDefault": sensor.isDefault, "time": sensor.time, "meter_id": sensor.meter_id} for sensor in sensors]
+    sensor_dicts = [{"id": sensor.id, "isDefault": sensor.isDefault, "meter_id": sensor.meter_id} for sensor in sensors]
     return jsonify(sensor_dicts)
 
 # Get sensors for a specific meter
