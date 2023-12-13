@@ -12,9 +12,7 @@
       OneWire oneWire;
       DallasTemperature sensors;
     public:
-      Therm(int Pin)
-        this.pin = Pin;
-      }
+      Therm(int Pin) : pin(Pin) {}
       void begin(){
       }
       float getTemp(){
