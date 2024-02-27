@@ -1,6 +1,6 @@
 # controllers.py
 from flask import Flask, request, jsonify
-from services import MeterService, ReadingService, SensorService
+from services.services import MeterService, ReadingService, SensorService
 from flask import Blueprint
 
 controllers_blueprint = Blueprint('controllers', __name__)
@@ -80,7 +80,10 @@ def get_sensor_readings(sensor_id):
 @controllers_blueprint.route('/sensors', methods=['POST'])
 def create_sensor():
     data = request.get_json()
-    if "isDefault" in data and "time" in data and "meter_id" in data:
+    if "isDefault" in data and "meter_id" in data:
         isDefault = data["isDefault"]
-        time = data["time"]
         meter_id = data
+        sensor_id = sensor_service.create_sensor(isDefault,meter_id)
+        return jsonify(sensor_id)
+    else:
+        return jsonify("bad Request")
