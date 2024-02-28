@@ -24,12 +24,11 @@ DBSession = sessionmaker(bind=engine)
 
 class ReadingService:
     @staticmethod
-    def create_reading(value, time, sensor_id):
+    def create_reading(value, time, sensor_id, type):
         session = DBSession()
-        reading = Reading(value=value, time=time, sensor_id=sensor_id)
+        reading = Reading(value=value, time=time, sensor_id=sensor_id,type=type)
         session.add(reading)
         session.commit()
-        session.close()
         return reading.id
 
     @staticmethod
@@ -37,24 +36,23 @@ class ReadingService:
         session = DBSession()
         readings = session.query(Reading).all()
         session.close()
-        return [{"id": reading.id, "value": reading.value, "time": reading.time, "sensor_id": reading.sensor_id} for reading in readings]
+        return [{"id": reading.id, "value": reading.value, "time": reading.time, "sensor_id": reading.sensor_id,"type": reading.type} for reading in readings]
 
     @staticmethod
     def get_sensor_readings(sensor_id):
         session = DBSession()
         readings = session.query(Reading).filter_by(sensor_id=sensor_id).all()
         session.close()
-        return [{"id": reading.id, "value": reading.value, "time": reading.time} for reading in readings]
+        return [{"id": reading.id, "value": reading.value, "time": reading.time,"type": reading.type} for reading in readings]
 
     # Implement update and delete methods for Reading, if needed
 class SensorService:
     @staticmethod
-    def create_sensor(isDefault,meter_id):
+    def create_sensor(isdefault,meter_id):
         session = DBSession()
-        sensor = Sensor(isDefault=isDefault, meter_id=meter_id)
+        sensor = Sensor(isdefault=isdefault, meter_id=meter_id)
         session.add(sensor)
         session.commit()
-        session.close()
         return sensor.id
 
     @staticmethod
@@ -62,14 +60,14 @@ class SensorService:
         session = DBSession()
         sensors = session.query(Sensor).all()
         session.close()
-        return [{"id": sensor.id, "isDefault": sensor.isDefault, "time": sensor.time, "meter_id": sensor.meter_id} for sensor in sensors]
+        return [{"id": sensor.id, "isDefault": sensor.isdefault, "meter_id": sensor.meter_id} for sensor in sensors]
 
     @staticmethod
     def get_meter_sensors(meter_id):
         session = DBSession()
         sensors = session.query(Sensor).filter_by(meter_id=meter_id).all()
         session.close()
-        return [{"id": sensor.id, "isDefault": sensor.isDefault, "time": sensor.time} for sensor in sensors]
+        return [{"id": sensor.id, "isdefault": sensor.isDefault, "time": sensor.time} for sensor in sensors]
 
 class MeterService:
     @staticmethod

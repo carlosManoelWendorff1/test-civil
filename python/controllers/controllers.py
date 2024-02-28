@@ -58,11 +58,12 @@ def delete_meter(meter_id):
 @controllers_blueprint.route('/readings', methods=['POST'])
 def create_reading():
     data = request.get_json()
-    if "value" in data and "time" in data and "sensor_id" in data:
+    if "value" in data and "time" in data and "type" in data and "sensor_id" in data:
         value = data["value"]
         time = data["time"]
         sensor_id = data["sensor_id"]
-        reading_id = reading_service.create_reading(value, time, sensor_id)
+        type = data["type"]
+        reading_id = reading_service.create_reading(value, time, sensor_id,type)
         return jsonify({"message": "Reading created successfully", "reading_id": reading_id}), 201
     else:
         return jsonify({"error": "Missing values"}), 400
@@ -77,13 +78,18 @@ def get_sensor_readings(sensor_id):
     readings = reading_service.get_sensor_readings(sensor_id)
     return jsonify(readings)
 
+@controllers_blueprint.route('/sensors', methods=['GET'])
+def get_sensors():
+    sensors = sensor_service.get_sensors()
+    return jsonify(sensors)
+
 @controllers_blueprint.route('/sensors', methods=['POST'])
 def create_sensor():
     data = request.get_json()
-    if "isDefault" in data and "meter_id" in data:
-        isDefault = data["isDefault"]
-        meter_id = data
-        sensor_id = sensor_service.create_sensor(isDefault,meter_id)
+    if "isdefault" in data and "meter_id" in data:
+        isdefault = data.get("isdefault")
+        meter_id = data.get("meter_id")
+        sensor_id = sensor_service.create_sensor(isdefault,meter_id)
         return jsonify(sensor_id)
     else:
         return jsonify("bad Request")

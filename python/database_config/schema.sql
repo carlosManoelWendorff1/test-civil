@@ -6,7 +6,7 @@ CREATE TABLE meters (
 
 CREATE TABLE sensors (
     id SERIAL PRIMARY KEY,
-    isDefault BOOLEAN DEFAULT FALSE,
+    isdefault BOOLEAN DEFAULT FALSE,
     meter_id INTEGER REFERENCES meters(id)
 );
 
