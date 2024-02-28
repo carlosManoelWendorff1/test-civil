@@ -20,7 +20,7 @@ class Sensor(Base):
     __tablename__ = 'sensors'
 
     id = Column(Integer, primary_key=True)
-    isDefault = Column(Boolean, default=False)
+    isdefault = Column(Boolean, default=False)
     meter_id = Column(Integer, ForeignKey('meters.id'))
     
     meter = relationship("Meter", back_populates="sensors")
