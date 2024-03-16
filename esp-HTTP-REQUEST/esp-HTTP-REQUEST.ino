@@ -3,9 +3,9 @@
 #include "Therm.h"
 #include "TimeFormatter.h"
 
-const char* ssid = "Naxi_2G";
-const char* password = "sebastian";
-const char* serverName = "192.168.224.75";  // Replace with your server's address
+const char* ssid = "WickedBotz";
+const char* password = "wickedbotz";
+const char* serverName = "192.168.0.140";  // Replace with your server's address
 const int serverPort = 5000;                // HTTP
 
 unsigned long currentMillis = 0;
@@ -13,7 +13,7 @@ unsigned long currentMillis = 0;
 Hdc hdc;
 Therm therm_1(13);
 Therm therm_2(12);
-Therm therm_3(14);
+Therm therm_3(27);
 
 TimeFormatter timeFormatter;
 
@@ -55,7 +55,7 @@ void loop() {
 
   String value[5] = {String(sensorTemp), String(sensorHum), String(therm_1_value, 1), String(therm_2_value, 1), String(therm_3_value, 1) };
 
-  for (int i = 0; i < 5; i++) {
+  for (int i = 1; i < 5; i++) {
     WiFiClient client;
     if (!client.connect(serverName, serverPort)) {
       Serial.println("Connection failed");
@@ -63,7 +63,7 @@ void loop() {
     }
     Serial.println(i);
 
-    String url = "/readings";
+    String url = "/api/readings";
 
 
     String body = String("{\r\n  \"value\": ") + value[i - 2] + ",\r\n" 
@@ -76,7 +76,7 @@ void loop() {
       + body.length() + "\r\n" + "Connection: close\r\n\r\n" + body;
 
     client.print(request);
-
+    Serial.print(body);
     Serial.println("Sending request...");
     unsigned long timeout = millis();
     while (client.available() == 0) {
