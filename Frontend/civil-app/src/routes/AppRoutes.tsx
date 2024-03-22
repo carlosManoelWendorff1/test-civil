@@ -1,16 +1,17 @@
 import React from 'react';
 import { Routes, Route, Router } from 'react-router-dom';
-import DashboardComponent from '../components/dashboard-components/DashboardComponent';
+import DashboardReadings from '../components/dashboard-components/DashboardReadings';
+
 
 const AppRoutes: React.FC = () => {
   return (
       <Routes>
-        <Route path="/dashboard" element={<DashboardComponent />} />
-        <Route path="/" element={<DashboardComponent />} />
+        <Route path="/dashboard" element={<DashboardReadings />} />
+        <Route path="/" element={<DashboardReadings />} />
       </Routes>
   );
 };
 
 
-export const API_URL = 'http://localhost:8080/';
+export const API_URL = 'http://localhost:5000';
 export default AppRoutes;

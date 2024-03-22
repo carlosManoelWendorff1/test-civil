@@ -7,6 +7,7 @@ from sqlalchemy.orm import relationship
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import sessionmaker
 from datetime import datetime
+from flask_swagger import swagger
 
 from models.meter import Meter, Reading, Sensor
 
@@ -34,7 +35,7 @@ class ReadingService:
     @staticmethod
     def get_readings():
         session = DBSession()
-        readings = session.query(Reading).all()
+        readings = session.query(Reading).order_by(Reading.time.asc()).all()
         session.close()
         return [{"id": reading.id, "value": reading.value, "time": reading.time, "sensor_id": reading.sensor_id,"type": reading.type} for reading in readings]
 
@@ -71,9 +72,9 @@ class SensorService:
 
 class MeterService:
     @staticmethod
-    def create_meter(battery):
+    def create_meter(battery, name):
         session = DBSession()
-        meter = Meter(battery=battery)
+        meter = Meter(battery=battery, name=name)
         session.add(meter)
         session.commit()
         return meter.id
@@ -83,7 +84,7 @@ class MeterService:
         session = DBSession()
         meters = session.query(Meter).all()
         session.close()
-        return [{"id": meter.id, "battery": meter.battery} for meter in meters]
+        return [{"id": meter.id, "battery": meter.battery, "name": meter.name} for meter in meters]
 
     @staticmethod
     def get_meter(meter_id):
@@ -96,11 +97,12 @@ class MeterService:
             return None
 
     @staticmethod
-    def update_meter(meter_id, new_battery):
+    def update_meter(meter_id, new_battery, new_name):
         session = DBSession()
         meter = session.query(Meter).get(meter_id)
         if meter:
             meter.battery = new_battery
+            meter.name = new_name
             session.commit()
             session.close()
             return {"message": "Meter updated successfully", "meter_id": meter.id}

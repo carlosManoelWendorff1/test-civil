@@ -19,10 +19,11 @@ def create_meter():
     data = request.get_json()
     if "battery" in data:
         battery = data["battery"]
-        meter_id = meter_service.create_meter(battery)
+        name = data["name"]
+        meter_id = meter_service.create_meter(battery, name)
         return jsonify({"message": "Meter created successfully", "meter_id": meter_id}), 201
     else:
-        return jsonify({"error": "Missing 'battery' value"}), 400
+        return jsonify({"error": "Missing 'battery and name' value"}), 400
 
 @controllers_blueprint.route('/meters', methods=['GET'])
 def get_meters():
@@ -41,7 +42,8 @@ def get_meter(meter_id):
 def update_meter(meter_id):
     data = request.get_json()
     new_battery = data.get("battery")
-    result = meter_service.update_meter(meter_id, new_battery)
+    new_name = data.get("name")
+    result = meter_service.update_meter(meter_id, new_battery, new_name=new_name)
     if result:
         return jsonify(result)
     else:
