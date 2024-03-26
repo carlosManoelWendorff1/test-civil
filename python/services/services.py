@@ -45,6 +45,13 @@ class ReadingService:
         readings = session.query(Reading).filter_by(sensor_id=sensor_id).all()
         session.close()
         return [{"id": reading.id, "value": reading.value, "time": reading.time,"type": reading.type} for reading in readings]
+    
+    @staticmethod
+    def get_meter_readings(meter_id):
+        session = DBSession()
+        readings = session.query(Reading).join(Sensor).filter(Sensor.meter_id == meter_id).all()
+        session.close()
+        return [{"id": reading.id, "value": reading.value, "time": reading.time, "type": reading.type} for reading in readings]
 
     # Implement update and delete methods for Reading, if needed
 class SensorService:
