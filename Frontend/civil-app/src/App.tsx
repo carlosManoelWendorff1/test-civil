@@ -20,7 +20,10 @@ function App() {
             style={{ flex: 1, minWidth: 0 }}
           >
             <MenuItem>
-              <Link to="/dashboard">Dashboard</Link>
+              <Link to="/dashboard">Dashboard Temperatura</Link>
+            </MenuItem>
+            <MenuItem>
+              <Link to="/dashboardHum">Dashboard Humidade</Link>
             </MenuItem>
           </Menu>
         </Header>

@@ -6,14 +6,22 @@ import Readings from "../models/Readings";
 const API_LOCALE = "/api/readings"
 
 const ReadingService = {
-    async getReadings(): Promise<Readings[] | null> {
+    async getReadings(meter: any, startDate: string, endDate: string): Promise<Readings[] | null> {
         try {
-          const response: AxiosResponse<Readings[]> = await axios.get(`${API_URL + API_LOCALE}`);
+          const response = await axios.get(API_URL +  `/api/meters/${meter}/readings`, {
+            params: {
+              date_start: startDate,
+              date_end: endDate
+            }
+          });
           return response.data;
         } catch (error) {
           return null;
         }
-      },
+      }
+
+      
+    
 }
 
 export default ReadingService

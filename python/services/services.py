@@ -42,16 +42,23 @@ class ReadingService:
     @staticmethod
     def get_sensor_readings(sensor_id):
         session = DBSession()
-        readings = session.query(Reading).filter_by(sensor_id=sensor_id).all()
+        readings = session.query(Reading).filter_by(sensor_id=sensor_id).order_by(Reading.time.asc()).all()
         session.close()
-        return [{"id": reading.id, "value": reading.value, "time": reading.time,"type": reading.type} for reading in readings]
+        return [{"id": reading.id, "value": reading.value, "time": reading.time, "sensor_id": reading.sensor_id,"type": reading.type} for reading in readings]
     
     @staticmethod
     def get_meter_readings(meter_id):
         session = DBSession()
-        readings = session.query(Reading).join(Sensor).filter(Sensor.meter_id == meter_id).all()
+        readings = session.query(Reading).join(Sensor).filter(Sensor.meter_id == meter_id).order_by(Reading.time.asc()).all()
         session.close()
-        return [{"id": reading.id, "value": reading.value, "time": reading.time, "type": reading.type} for reading in readings]
+        return [{"id": reading.id, "value": reading.value, "time": reading.time, "sensor_id": reading.sensor_id,"type": reading.type} for reading in readings]
+
+    @staticmethod
+    def get_meter_readings(meter_id, timeStart, timeEnd):
+        session = DBSession()
+        readings = session.query(Reading).join(Sensor).filter(Sensor.meter_id == meter_id).filter(Reading.time >= timeStart).filter(Reading.time <= timeEnd).order_by(Reading.time.asc()).all()
+        session.close()
+        return [{"id": reading.id, "value": reading.value, "time": reading.time, "sensor_id": reading.sensor_id,"type": reading.type} for reading in readings]
 
     # Implement update and delete methods for Reading, if needed
 class SensorService:
