@@ -12,7 +12,7 @@ class Meter(Base):
 
     id = Column(Integer, primary_key=True)
     battery = Column(Integer)
-
+    name = Column(String)
     sensors = relationship("Sensor", back_populates="meter")
 
 

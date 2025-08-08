@@ -2,6 +2,7 @@
 from flask import Flask, request, jsonify
 from services.services import MeterService, ReadingService, SensorService
 from flask import Blueprint
+from datetime import datetime
 
 controllers_blueprint = Blueprint('controllers', __name__)
 
@@ -19,10 +20,11 @@ def create_meter():
     data = request.get_json()
     if "battery" in data:
         battery = data["battery"]
-        meter_id = meter_service.create_meter(battery)
+        name = data["name"]
+        meter_id = meter_service.create_meter(battery, name)
         return jsonify({"message": "Meter created successfully", "meter_id": meter_id}), 201
     else:
-        return jsonify({"error": "Missing 'battery' value"}), 400
+        return jsonify({"error": "Missing 'battery and name' value"}), 400
 
 @controllers_blueprint.route('/meters', methods=['GET'])
 def get_meters():
@@ -41,7 +43,8 @@ def get_meter(meter_id):
 def update_meter(meter_id):
     data = request.get_json()
     new_battery = data.get("battery")
-    result = meter_service.update_meter(meter_id, new_battery)
+    new_name = data.get("name")
+    result = meter_service.update_meter(meter_id, new_battery, new_name=new_name)
     if result:
         return jsonify(result)
     else:
@@ -77,6 +80,19 @@ def get_readings():
 def get_sensor_readings(sensor_id):
     readings = reading_service.get_sensor_readings(sensor_id)
     return jsonify(readings)
+
+@controllers_blueprint.route('/meters/<int:meters_id>/readings', methods=['GET'])
+def get_meter_readings(meters_id):
+    date_str_start = request.args.get('date_start')
+    date_str_end = request.args.get('date_end')
+    try:
+        date_start = datetime.strptime(date_str_start, '%Y-%m-%d')
+        date_end = datetime.strptime(date_str_end, '%Y-%m-%d')
+        readings = reading_service.get_meter_readings(meters_id, date_start, date_end)
+        return jsonify(readings)
+    except ValueError:
+        return jsonify({'error': 'Invalid date format. Please use YYYY-MM-DD.'}), 400
+
 
 @controllers_blueprint.route('/sensors', methods=['GET'])
 def get_sensors():
